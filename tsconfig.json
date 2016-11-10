@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
+    // "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true
+  },
+  "files": [
+    "./src/index.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

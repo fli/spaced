@@ -9,12 +9,17 @@
   "author": "fli",
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-plugin-inferno": "1.0.1-beta6",
     "ts-loader": "^1.1.0",
     "typescript": "next",
     "webpack": "2.1.0-beta.25",
     "webpack-dev-server": "2.1.0-beta.10"
   },
   "dependencies": {
-    "inferno": "1.0.0-beta7"
+    "history": "^4.4.0",
+    "inferno": "1.0.0-beta7",
+    "inferno-dom": "1.0.0-beta7"
   }
 }
