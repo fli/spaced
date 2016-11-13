@@ -9,9 +9,10 @@
   "author": "fli",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.7",
-    "babel-plugin-inferno": "1.0.1-beta6",
+    "@types/isomorphic-fetch": "^0.0.31",
+    "@types/react": "^0.14.47",
+    "@types/react-dom": "^0.14.18",
+    "react-hot-loader": "3.0.0-beta.6",
     "ts-loader": "^1.1.0",
     "typescript": "next",
     "webpack": "2.1.0-beta.25",
@@ -19,7 +20,11 @@
   },
   "dependencies": {
     "history": "^4.4.0",
-    "inferno": "1.0.0-beta7",
-    "inferno-dom": "1.0.0-beta7"
+    "isomorphic-fetch": "^2.2.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  },
+  "scripts": {
+    "start": "webpack-dev-server"
   }
 }

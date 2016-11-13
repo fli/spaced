@@ -1,7 +1,14 @@
-import Inferno from 'inferno';
+/// <reference path="../@types/history.d.ts" />;
 
+import * as React from 'react';
+import { render } from 'react-dom';
+import history from './history';
 
-Inferno.render(
-  <p>Test</p>,
+import App from './App';
+
+const APP_NAME = 'Spaced';
+
+render(
+  <App name={APP_NAME} loggedIn={true} />,
   document.getElementById('root')
 );
