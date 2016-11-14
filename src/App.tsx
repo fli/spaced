@@ -19,6 +19,7 @@ interface State {
   location: string;
   loggedIn: boolean;
   decks: null | {id: number, name: string}[];
+  isDialogOpen: boolean;
 }
 
 
@@ -28,7 +29,8 @@ export default class App extends React.Component<Props, State> {
     this.state = {
       location: history.location.pathname,
       loggedIn: this.props.loggedIn,
-      decks: null
+      decks: null,
+      isDialogOpen: false
     }
     history.listen((location: Location, _) => {
       this.setState({
@@ -54,6 +56,7 @@ export default class App extends React.Component<Props, State> {
         decks: [...this.state.decks, deck] 
       });
     }
+    return response.ok;
   }
 
   setLoggedIn = (loggedIn: boolean) => {
@@ -62,24 +65,43 @@ export default class App extends React.Component<Props, State> {
     });
   }
 
+  openDialog = () => {
+    this.setState({
+      isDialogOpen: true
+    });
+  }
+
+  closeDialog = () => { this.setState({ isDialogOpen: false }); }
+
   locationToComponent = (location: string) => {
     const { loggedIn, decks } = this.state;
     const signInPage = <SignIn setLoggedIn={this.setLoggedIn} />;
+    const decksPage = <Decks decks={decks} fetchDecks={this.fetchDecks} openDialog={this.openDialog} />;
+    const addCardsPage = <AddCard decks={decks} fetchDecks={this.fetchDecks} openDialog={this.openDialog}/>
     switch (location) {
-      case '/': return (loggedIn ? <Decks decks={decks} fetchDecks={this.fetchDecks} />: <Home />);
-      case '/addcard': return (loggedIn ? <AddCard />: signInPage);
-      case '/signin': return (loggedIn ? <Decks decks={decks} fetchDecks={this.fetchDecks} />: signInPage);
+      case '/': return (loggedIn ? decksPage : <Home />);
+      case '/addcard': return (loggedIn ? addCardsPage : signInPage);
+      case '/signin': return (loggedIn ? decksPage : signInPage);
       default: return <h1>Not found</h1>;
     }
   }
 
+  handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // console.log(event.target);
+  }
+
   render() {
-    const { location, loggedIn } = this.state;
+    const { location, loggedIn, isDialogOpen } = this.state;
     return (
-      <div>
+      <div onClick={this.handleClick}>
         <Header loggedIn={loggedIn} />
         {this.locationToComponent(location)}
-        <AddDeckModal addDeck={this.addDeck} fetchDecks={this.fetchDecks} />
+        <AddDeckModal
+          closeDialog={this.closeDialog}
+          isDialogOpen={isDialogOpen}
+          addDeck={this.addDeck}
+          fetchDecks={this.fetchDecks}
+        />
       </div>);
   }
 }
