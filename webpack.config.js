@@ -1,7 +1,7 @@
 var path = require("path");
 module.exports = {
   entry: {
-    app: ["./src/index.tsx"]
+    app: ["./src/client/index.tsx"]
   },
   output: {
     path: path.resolve(__dirname, "build"),
@@ -13,15 +13,19 @@ module.exports = {
   },
   module: {
     loaders: [
-      // { test: /\.tsx?$/, loaders: 'babel', query: {
-      //   plugins: [["transform-react-jsx", { "pragma": "createElement" }]]
-      // }},
-      { test: /\.tsx?$/, loaders: 'ts-loader' },
+      { test: /\.tsx?$/, loaders: [ {loader: 'ts-loader', query: {configFileName: 'src/client/tsconfig.json', visualStudioErrorFormat: true} } ]},
+      { test: /\.css$/, loaders: [ 'style-loader', 'css-loader?camelCase&importLoaders=1&modules', 'postcss-loader' ] }
     ]
   },
   devServer: {
     contentBase: "./public",
     inline: true,
-    historyApiFallback: true
-  }
+    historyApiFallback: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        secure: false
+      }
+    }
+  },
 };

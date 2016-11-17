@@ -1,0 +1,30 @@
+.header {
+  height: 50px;
+}
+
+.nav-container {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-container > li {
+  padding: 5px
+}
+
+.button {
+  color: #fff;
+  background-color: #0275d8;
+  border-color: #0275d8;
+  border: 1px solid transparent;
+  padding: .5rem 1rem;
+  border-radius: .25rem;
+  cursor: pointer;
+}
+
+.button:focus, .button:hover {
+
+}

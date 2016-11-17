@@ -10,7 +10,6 @@ interface Props {
 interface State {
   [x: string]: string;
 }
-
 export default class SignIn extends React.Component<Props, State> {
   constructor() {
     super();
@@ -27,7 +26,7 @@ export default class SignIn extends React.Component<Props, State> {
     this.props.setLoggedIn(response.ok);
   }
 
-  handleInput = ({ target: { name, value } }: React.FormEvent<HTMLInputElement>) => {
+  handleInput = ({ currentTarget: { name, value } }: React.FormEvent<HTMLInputElement>) => {
     this.setState({
       [name]: value
     });

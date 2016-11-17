@@ -7,15 +7,23 @@ interface Props {
   closeDialog: () => void;
 }
 
-export default class AddDeckModal extends React.Component<Props, {}> {
-  state = {
-    name: '',
-    isSubmitting: false
+interface State {
+  name?: string;
+  isSubmitting?: boolean;
+}
+
+export default class AddDeckModal extends React.Component<Props, State> {
+  constructor() {
+    super();
+    this.state = {
+      name: '',
+      isSubmitting: false
+    };
   }
 
   handleInput = (event: React.FormEvent<HTMLInputElement>) => {
     this.setState({
-      name: event.target.value
+      name: event.currentTarget.value
     });
   }
 
@@ -29,15 +37,19 @@ export default class AddDeckModal extends React.Component<Props, {}> {
     this.setState({
       isSubmitting: true
     });
-    await this.props.addDeck(this.state.name.trim());
+    if (!this.state.name) return;
+    const ok = await this.props.addDeck(this.state.name.trim());
     this.setState({
       isSubmitting: false
     });
-    this.props.closeDialog();
+    if (ok) {
+      this.props.closeDialog();
+    }
   }
 
   render() {
     const { name, isSubmitting } = this.state;
+    if (!name) {return null};
     return (
       <div hidden={!this.props.isDialogOpen}>
         <form onSubmit={this.handleSubmit}>

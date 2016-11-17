@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    // "allowJs": true,
-    // "maxNodeModuleJsDepth": 1,
-    // "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "noImplicitAny": true,
@@ -11,8 +8,8 @@
     "strictNullChecks": true,
     "target": "es6"
   },
-  "files": [
-    "./src/index.tsx"
+  "include": [
+    "@types"
   ],
   "exclude": [
     "node_modules"

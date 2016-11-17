@@ -16,12 +16,11 @@ interface Props {
 }
 
 interface State {
-  location: string;
-  loggedIn: boolean;
-  decks: null | {id: number, name: string}[];
-  isDialogOpen: boolean;
+  location?: string;
+  loggedIn?: boolean;
+  decks?: null | {id: number, name: string}[];
+  isDialogOpen?: boolean;
 }
-
 
 export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -43,7 +42,7 @@ export default class App extends React.Component<Props, State> {
     const response = await get('/api/decks');
     const { decks } = await response.json();
     this.setState({ decks });
-  } 
+  }
 
   addDeck = async (name: string) => {
     if (!this.state.decks) {
@@ -53,8 +52,22 @@ export default class App extends React.Component<Props, State> {
     if (response.ok) {
       const deck = await response.json();
       this.setState({
-        decks: [...this.state.decks, deck] 
+        decks: [...this.state.decks, deck]
       });
+    }
+    return response.ok;
+  }
+
+  addCard = async (deckId: number, front: string, back: string) => {
+    // if (!this.state.decks) {
+    //   return;
+    // }
+    const response = await post('/api/cards', { deckId, front, back });
+    if (response.ok) {
+      // const deck = await response.json();
+      // this.setState({
+      //   decks: [...this.state.decks, deck] 
+      // });
     }
     return response.ok;
   }
@@ -75,9 +88,10 @@ export default class App extends React.Component<Props, State> {
 
   locationToComponent = (location: string) => {
     const { loggedIn, decks } = this.state;
+    if (decks === undefined) { return null; }
     const signInPage = <SignIn setLoggedIn={this.setLoggedIn} />;
     const decksPage = <Decks decks={decks} fetchDecks={this.fetchDecks} openDialog={this.openDialog} />;
-    const addCardsPage = <AddCard decks={decks} fetchDecks={this.fetchDecks} openDialog={this.openDialog}/>
+    const addCardsPage = <AddCard decks={decks} fetchDecks={this.fetchDecks} addCard={this.addCard} openDialog={this.openDialog}/>
     switch (location) {
       case '/': return (loggedIn ? decksPage : <Home />);
       case '/addcard': return (loggedIn ? addCardsPage : signInPage);
@@ -86,14 +100,11 @@ export default class App extends React.Component<Props, State> {
     }
   }
 
-  handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    // console.log(event.target);
-  }
-
   render() {
     const { location, loggedIn, isDialogOpen } = this.state;
+    if (!location || loggedIn === undefined || isDialogOpen === undefined) { return null; }
     return (
-      <div onClick={this.handleClick}>
+      <div>
         <Header loggedIn={loggedIn} />
         {this.locationToComponent(location)}
         <AddDeckModal
