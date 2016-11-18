@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import history from '../history';
 
 interface Props {
@@ -14,7 +13,6 @@ export default class Link extends React.PureComponent<Props, {}> {
       return;
     }
     history.push(this.props.to);
-
   }
 
   render() {

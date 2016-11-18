@@ -2,5 +2,8 @@
   "extends": "../../tsconfig.json",
   "files": [
     "index.tsx"
-  ]
+  ],
+  "compilerOptions": {
+    "moduleResolution": "node"
+  }
 }

@@ -20,12 +20,12 @@ module.exports = {
   devServer: {
     contentBase: "./public",
     inline: true,
-    historyApiFallback: true,
-    proxy: {
-      '/api': {
+    proxy: [
+      {
+        context: ['/**/*', '!**/*.css', '!**/*.js'],
         target: 'http://localhost:3000',
         secure: false
       }
-    }
+    ]
   },
 };

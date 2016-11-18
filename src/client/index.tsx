@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
+import history from './history';
 
 import App from './App';
 
 const APP_NAME = 'Spaced';
-
-const history = createBrowserHistory();
 
 function renderApp(path: string, query: string) {
   render(

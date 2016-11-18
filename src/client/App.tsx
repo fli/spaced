@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { Location } from 'history/createBrowserHistory';
 import { parse } from 'querystring';
 
 import AddCard from './pages/AddCard';
 import AddDeckModal from './components/AddDeckModal';
 import Decks from './pages/Decks';
 import { get, post } from './fetch';
-import history from './history';
 import Header from './Header';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
@@ -15,11 +13,11 @@ import Verify from './pages/Verify';
 interface Props {
   name: string;
   loggedIn: boolean;
-  location: string;
+  path: string;
+  query: string;
 }
 
 interface State {
-  location?: string;
   loggedIn?: boolean;
   decks?: null | {id: number, name: string}[];
   isDialogOpen?: boolean;
@@ -29,19 +27,10 @@ export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      location: this.props.location,
       loggedIn: this.props.loggedIn,
       decks: null,
       isDialogOpen: false
     }
-    if (history === null) {
-      return;
-    }
-    (history as any).listen((location: Location, _: any) => {
-      this.setState({
-        location: location.pathname
-      });
-    });
   }
 
   fetchDecks = async () => {
@@ -92,18 +81,18 @@ export default class App extends React.Component<Props, State> {
 
   closeDialog = () => { this.setState({ isDialogOpen: false }); }
 
-  locationToComponent = (location: string) => {
+  locationToComponent = (path: string, query: string) => {
     const { loggedIn, decks } = this.state;
     if (decks === undefined) { return null; }
     const signInPage = <SignIn setLoggedIn={this.setLoggedIn} />;
     const decksPage = <Decks decks={decks} fetchDecks={this.fetchDecks} openDialog={this.openDialog} />;
     const addCardsPage = <AddCard decks={decks} fetchDecks={this.fetchDecks} addCard={this.addCard} openDialog={this.openDialog}/>
-    switch (location) {
+    switch (path) {
       case '/': return (loggedIn ? decksPage : <Home />);
       case '/addcard': return (loggedIn ? addCardsPage : signInPage);
       case '/signin': return (loggedIn ? decksPage : signInPage);
       case '/verify':
-        const { token } = parse(history.location.search.substring(1));
+        const { token } = parse(query.substring(1));
         if (token === undefined) {
           return (loggedIn ? decksPage : <Home />);
         }
@@ -113,12 +102,13 @@ export default class App extends React.Component<Props, State> {
   }
 
   render() {
-    const { location, loggedIn, isDialogOpen } = this.state;
-    if (!location || loggedIn === undefined || isDialogOpen === undefined) { return null; }
+    const { loggedIn, isDialogOpen } = this.state;
+    const { path, query } = this.props;
+    if (loggedIn === undefined || isDialogOpen === undefined) { return null; }
     return (
       <div>
         <Header loggedIn={loggedIn} />
-        {this.locationToComponent(location)}
+        {this.locationToComponent(path, query)}
         <AddDeckModal
           closeDialog={this.closeDialog}
           isDialogOpen={isDialogOpen}

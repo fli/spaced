@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import history from '../history';
 import { get, post } from '../fetch';
 
 interface Props {
@@ -8,8 +7,10 @@ interface Props {
 }
 
 interface State {
-  [x: string]: string;
+  email?: string;
+  password?: string;
 }
+
 export default class SignIn extends React.Component<Props, State> {
   constructor() {
     super();
@@ -17,7 +18,6 @@ export default class SignIn extends React.Component<Props, State> {
       email: '',
       password: ''
     }
-    console.log('signin');
   }
 
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

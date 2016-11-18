@@ -64,8 +64,7 @@ async function addUser(ctx: Context) {
 }
 
 async function handleRender(ctx: Context) {
-  console.log(ctx);
-  const html = renderToString(createElement(App, { name: 'Spaced', loggedIn: false, location: ctx.path }))
+  const html = renderToString(createElement(App, { name: 'Spaced', loggedIn: false, path: ctx.path, query: ctx.querystring }))
   ctx.body = INDEX_HTML.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
   ctx.status = 200;
 }
