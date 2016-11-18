@@ -13,7 +13,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.tsx?$/, loaders: [ {loader: 'ts-loader', query: {configFileName: 'src/client/tsconfig.json', visualStudioErrorFormat: true} } ]},
+      { test: /\.tsx?$/, loaders: [ {loader: 'ts-loader', query: { configFileName: './src/client/tsconfig.json' } } ]},
       { test: /\.css$/, loaders: [ 'style-loader', 'css-loader?camelCase&importLoaders=1&modules', 'postcss-loader' ] }
     ]
   },

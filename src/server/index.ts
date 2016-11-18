@@ -7,6 +7,7 @@ import router from './routes';
 const app = new Koa();
 const PORT = 3000;
 
+app.use(KoaBodyparser());
 app.use(router.routes());
 
 app.listen(PORT);

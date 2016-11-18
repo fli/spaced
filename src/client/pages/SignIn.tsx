@@ -17,6 +17,7 @@ export default class SignIn extends React.Component<Props, State> {
       email: '',
       password: ''
     }
+    console.log('signin');
   }
 
   handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

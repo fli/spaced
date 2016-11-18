@@ -39,6 +39,8 @@
     "react-dom": "^15.4.0"
   },
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "build-server-watch": "tsc -p src/server/tsconfig.json -w",
+    "run-server-watch": "nodemon --no-deprecation -r dotenv/config build/server/server/index.js"
   }
 }

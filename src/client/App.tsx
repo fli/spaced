@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Location } from 'history/createBrowserHistory';
+import { parse } from 'querystring';
 
 import AddCard from './pages/AddCard';
 import AddDeckModal from './components/AddDeckModal';
@@ -9,10 +10,12 @@ import history from './history';
 import Header from './Header';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
+import Verify from './pages/Verify';
 
 interface Props {
   name: string;
   loggedIn: boolean;
+  location: string;
 }
 
 interface State {
@@ -26,12 +29,15 @@ export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      location: history.location.pathname,
+      location: this.props.location,
       loggedIn: this.props.loggedIn,
       decks: null,
       isDialogOpen: false
     }
-    history.listen((location: Location, _) => {
+    if (history === null) {
+      return;
+    }
+    (history as any).listen((location: Location, _: any) => {
       this.setState({
         location: location.pathname
       });
@@ -55,7 +61,7 @@ export default class App extends React.Component<Props, State> {
         decks: [...this.state.decks, deck]
       });
     }
-    return response.ok;
+    return response.ok; 
   }
 
   addCard = async (deckId: number, front: string, back: string) => {
@@ -96,6 +102,12 @@ export default class App extends React.Component<Props, State> {
       case '/': return (loggedIn ? decksPage : <Home />);
       case '/addcard': return (loggedIn ? addCardsPage : signInPage);
       case '/signin': return (loggedIn ? decksPage : signInPage);
+      case '/verify':
+        const { token } = parse(history.location.search.substring(1));
+        if (token === undefined) {
+          return (loggedIn ? decksPage : <Home />);
+        }
+        return <Verify token={token} setLoggedIn={this.setLoggedIn} />
       default: return <h1>Not found</h1>;
     }
   }

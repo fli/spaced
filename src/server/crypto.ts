@@ -3,7 +3,7 @@ import * as argon2 from 'argon2';
 
 const SALT_BYTES = 16;
 const OPS_LIMIT = 4;
-const MEM_LIMIT = 15; //33554432
+const MEM_LIMIT = 15;
 const PARALLELISM = 1;
 
 const ARGON_OPTIONS = {
@@ -22,7 +22,7 @@ function randomBytes(size: number) {
 }
 
 export function generateSessionId() {
-  return randomBytes(18);
+  return randomBytes(18).then(x => x.toString('base64'));
 }
 
 export async function generatePasswordHash(password: string) {

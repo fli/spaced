@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import Link from './components/Link';
 
-const { button, header, navContainer, navItem } = require('./Header.css');
+// const { button, header, navContainer, navItem } = require('./Header.css');
+const { button, header, navContainer, navItem } = {button: 'null', header: 'null', navContainer: 'null', navItem: 'null'}
 
 interface Props {
   loggedIn: boolean;
