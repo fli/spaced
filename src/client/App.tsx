@@ -3,6 +3,8 @@ import { parse } from 'querystring';
 
 import AddCard from './pages/AddCard';
 import AddDeckModal from './components/AddDeckModal';
+import DeckDetails from './pages/DeckDetails';
+import Deck from '../shared/types/Deck';
 import Decks from './pages/Decks';
 import { get, post } from './fetch';
 import Header from './Header';
@@ -15,11 +17,12 @@ interface Props {
   loggedIn: boolean;
   path: string;
   query: string;
+  decks: any;
 }
 
 interface State {
   loggedIn?: boolean;
-  decks?: null | {id: number, name: string}[];
+  decks?: Deck[];
   isDialogOpen?: boolean;
 }
 
@@ -27,8 +30,8 @@ export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loggedIn: this.props.loggedIn,
-      decks: null,
+      loggedIn: props.loggedIn,
+      decks: props.decks,
       isDialogOpen: false
     }
   }
@@ -40,7 +43,7 @@ export default class App extends React.Component<Props, State> {
   }
 
   addDeck = async (name: string) => {
-    if (!this.state.decks) {
+    if (this.state.decks === undefined) {
       return;
     }
     const response = await post('/api/decks', { name });
@@ -54,16 +57,7 @@ export default class App extends React.Component<Props, State> {
   }
 
   addCard = async (deckId: number, front: string, back: string) => {
-    // if (!this.state.decks) {
-    //   return;
-    // }
     const response = await post('/api/cards', { deckId, front, back });
-    if (response.ok) {
-      // const deck = await response.json();
-      // this.setState({
-      //   decks: [...this.state.decks, deck] 
-      // });
-    }
     return response.ok;
   }
 
@@ -83,7 +77,6 @@ export default class App extends React.Component<Props, State> {
 
   locationToComponent = (path: string, query: string) => {
     const { loggedIn, decks } = this.state;
-    if (decks === undefined) { return null; }
     const signInPage = <SignIn setLoggedIn={this.setLoggedIn} />;
     const decksPage = <Decks decks={decks} fetchDecks={this.fetchDecks} openDialog={this.openDialog} />;
     const addCardsPage = <AddCard decks={decks} fetchDecks={this.fetchDecks} addCard={this.addCard} openDialog={this.openDialog}/>
@@ -97,7 +90,12 @@ export default class App extends React.Component<Props, State> {
           return (loggedIn ? decksPage : <Home />);
         }
         return <Verify token={token} setLoggedIn={this.setLoggedIn} />
-      default: return <h1>Not found</h1>;
+      default:
+        const res =  /^\/decks\/(\d+)$/.exec(path);
+        if (res) {
+          return <DeckDetails deck={decks} />;
+        }
+        return <h1>Not found</h1>;
     }
   }
 
@@ -107,7 +105,7 @@ export default class App extends React.Component<Props, State> {
     if (loggedIn === undefined || isDialogOpen === undefined) { return null; }
     return (
       <div>
-        <Header loggedIn={loggedIn} />
+        <Header loggedIn={loggedIn} setLoggedIn={this.setLoggedIn} />
         {this.locationToComponent(path, query)}
         <AddDeckModal
           closeDialog={this.closeDialog}

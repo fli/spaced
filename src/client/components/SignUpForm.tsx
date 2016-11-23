@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { post } from '../fetch';
 
+const { container } = require('./SignUpForm.css');
+
 interface State {
   email?: string;
   isSubmitting?: boolean;
@@ -39,12 +41,10 @@ export default class SignUpForm extends React.Component<{}, State> {
       return <p>Verification email sent! Check your email to finish creating your account</p>;
     } else {
       return (
-      <form onSubmit={this.handleSubmit}>
-        <p>
-          <label>Email</label>
-          <input name="email" type="email" onInput={this.handleInput} value={email} />
-        </p>
-        <button disabled={email.trim() === '' || isSubmitting}>Submit</button>
+      <form onSubmit={this.handleSubmit} className={container}>
+        <label hidden>Email</label>
+        <input name="email" type="email" onInput={this.handleInput} value={email} placeholder="Email address" />
+        <button disabled={email.trim() === '' || isSubmitting}>Create a free account</button>
         {requestSuccess === false && <p>Error sending verification email</p>}
       </form>
     );

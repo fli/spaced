@@ -1,13 +1,15 @@
 import * as React from 'react';
 
 import SignUpForm from '../components/SignUpForm';
+const { jumbotron } = require('./Home.css');
 
 export default class Home extends React.PureComponent<{}, {}> {
   render() {
     return (
       <div>
-        <h1>Spaced repetition</h1>
-        <h2>Sign up here</h2>
+        <div className={jumbotron}>
+          <h1>Tools to help you learn things</h1>
+        </div>
         <SignUpForm />
       </div>
     );

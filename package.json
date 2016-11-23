@@ -13,18 +13,21 @@
     "@types/koa": "^2.0.34",
     "@types/koa-bodyparser": "^3.0.20",
     "@types/koa-router": "^7.0.21",
-    "@types/react": "^0.14.47",
-    "@types/react-dom": "^0.14.18",
-    "css-loader": "^0.25.0",
+    "@types/react": "^0.14.50",
+    "@types/react-dom": "^0.14.19",
+    "css-loader": "^0.26.0",
+    "extract-text-webpack-plugin": "2.0.0-beta.4",
+    "json-loader": "^ 0.5.4",
     "nodemon": "^1.11.0",
     "postcss-cssnext": "^2.8.0",
     "postcss-loader": "^1.1.1",
     "react-hot-loader": "3.0.0-beta.6",
     "style-loader": "^0.13.1",
-    "ts-loader": "^1.1.0",
+    "ts-loader": "^1.2.2",
     "typescript": "next",
     "webpack": "2.1.0-beta.25",
-    "webpack-dev-server": "2.1.0-beta.10"
+    "webpack-dev-server": "2.1.0-beta.10",
+    "webpack-node-externals": "^1.5.4"
   },
   "dependencies": {
     "argon2": "^0.14.1",
@@ -34,15 +37,13 @@
     "koa": "2.0.0-alpha.7",
     "koa-bodyparser": "2.3.0",
     "koa-router": "7.0.1",
-    "pg-promise": "^5.3.5",
+    "pg-promise": "5.4.3",
     "react": "^15.4.0",
-    "react-dom": "^15.4.0",
-    "react-redux": "5.0.0-beta.3",
-    "redux": "^3.6.0"
+    "react-dom": "^15.4.0"
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build-server-watch": "tsc -p src/server/tsconfig.json -w",
-    "run-server-watch": "nodemon --no-deprecation -r dotenv/config build/server/server/index.js"
+    "build-server-watch": "webpack --config webpack.server.config.js -w",
+    "run-server-watch": "nodemon --no-deprecation -r dotenv/config build/bundle.js"
   }
 }

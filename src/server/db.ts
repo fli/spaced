@@ -92,7 +92,7 @@ export async function resetModels() {
   await db.none('DROP TABLE IF EXISTS cards CASCADE');
   await db.none('DROP TABLE IF EXISTS sessions CASCADE');
   await db.none('CREATE TABLE decks (id serial, user_id integer NOT NULL, name text NOT NULL)');
-  await db.none('CREATE TABLE cards (id serial, deck_id integer NOT NULL, front text NOT NULL, back text NOT NULL)');
+  await db.none('CREATE TABLE cards (id serial, deck_id integer NOT NULL, front text NOT NULL, back text NOT NULL, easiness_factor real NOT NULL DEFAULT 2.5, repetition integer NOT NULL DEFAULT 0, last_repeated date NOT NULL DEFAULT current_date, due date NOT NULL DEFAULT current_date + 1)');
   await db.none('CREATE TABLE users (id serial, email varchar(254) UNIQUE NOT NULL, password_hash text NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');
   await db.none('CREATE TABLE pending_users (email varchar(254) UNIQUE NOT NULL, verification_token char(24) UNIQUE NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');
   await db.none('CREATE TABLE sessions (id char(24) UNIQUE NOT NULL, user_id integer NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');

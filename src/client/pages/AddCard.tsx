@@ -1,9 +1,10 @@
 import * as React from 'react';
 
 import { get, post } from '../fetch';
+import Deck from '../../shared/types/Deck';
 
 interface Props {
-  decks: any[] | null;
+  decks?: Deck[];
   addCard: (deckId: number, front: string, back: string) => Promise<boolean>;
   fetchDecks: () => void;
   openDialog: () => void;

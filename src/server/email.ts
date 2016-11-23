@@ -26,7 +26,7 @@ const sendgridData = {
 function buildEmail(email: string, token: string) {
   sendgridData.personalizations[0].to[0].email = email;
   const params = {
-    token,
+    token
   };
   sendgridData.content[0].value = `<p>
   You're nearly there! Click <a href="http://localhost:3000/verify?${stringify(params)}">here</a> to finish creating your account.

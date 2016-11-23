@@ -1,17 +1,18 @@
 .header {
-  height: 50px;
+  height: 3rem;
 }
 
-.nav-container {
+.left-container {
   list-style: none;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: baseline;
   margin: 0;
   padding: 0;
 }
 
-.nav-container > li {
+.left-container > li {
   padding: 5px
 }
 
@@ -22,9 +23,33 @@
   border: 1px solid transparent;
   padding: .5rem 1rem;
   border-radius: .25rem;
-  cursor: pointer;
+  cursor: pointer; 
+  align-self: flex-end;
 }
 
 .button:focus, .button:hover {
+}
 
+.brand {
+  color: black;
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+a:focus, a:hover {
+  text-decoration: none;
+}
+
+.right-flex {
+
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.outer-container > * {
+  margin: 0 .5rem;
 }

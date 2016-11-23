@@ -1,9 +1,11 @@
 import * as React from 'react';
 
+import Link from '../components/Link';
 import { get, post } from '../fetch';
+import Deck from '../../shared/types/Deck';
 
 interface Props {
-  decks: any[] | null;
+  decks?: Deck[];
   fetchDecks: () => void;
   openDialog: () => void;
 }
@@ -23,7 +25,7 @@ export default class Decks extends React.Component<Props, {}> {
           {decks.length === 0 ?
             <p>You have no decks</p> :
             <ul>
-              {decks.map(({id, name}) => <li key={id}>{name}</li>)}
+              {decks.map(({id, name}) => <li key={id}><Link to={`/decks/${id}`}>{name}</Link></li>)}
             </ul>
           }
           <button onClick={this.props.openDialog}>Create deck</button>

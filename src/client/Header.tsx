@@ -3,30 +3,35 @@ import * as React from 'react';
 import Link from './components/Link';
 import SignOutButton from './components/SignOutButton';
 
-// const { button, header, navContainer, navItem } = require('./Header.css');
-const { button, header, navContainer, navItem } = {button: 'null', header: 'null', navContainer: 'null', navItem: 'null'}
+const { brand, button, header, leftContainer, outerContainer, navItem, rightFlex } = require('./Header.css');
 
 interface Props {
   loggedIn: boolean;
+  setLoggedIn: (loggedIn: boolean) => void;
 }
 
-export default class Header extends React.PureComponent<Props, {}> {
+class Header extends React.PureComponent<Props, {}> {
+  shouldComponentUpdate(nextProps: Props) {
+    return this.props.loggedIn !== nextProps.loggedIn;
+  }
+
   render() {
-    const { loggedIn } = this.props;
+    const { loggedIn, setLoggedIn } = this.props;
     return (
       <header className={header}>
-        <nav>
-          <ul className={navContainer}>
-            <li><Link to='/'>Home</Link></li>
+        <nav className={outerContainer}>
+          <ul className={leftContainer}>
+            <li><Link to='/' className={brand}>Learnding</Link></li>
             {loggedIn && <li><Link to='/'>Decks</Link></li>}
             {loggedIn && <li><Link to='/addcard'>Add Card</Link></li>}
             {loggedIn && <li>Browse Cards</li>}
-            {loggedIn && <li><SignOutButton /></li>}
-            {!loggedIn && <li><Link to='/signin' className={button}>Sign In</Link></li>}
-            {/*!loggedIn && <li className={button}>Sign Up</li>*/}
           </ul>
+          {loggedIn && <SignOutButton className={button + ' ' + rightFlex} setLoggedIn={setLoggedIn} />}
+          {!loggedIn && <Link to='/signin' className={button + ' ' + rightFlex}>Sign In</Link>}
         </nav>
       </header>
     );
   }
 }
+
+export default Header;

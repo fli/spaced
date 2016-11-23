@@ -1,9 +1,8 @@
 import * as React from 'react';
 import history from '../history';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLAnchorElement> {
   to: string;
-  className? : string;
 }
 
 export default class Link extends React.PureComponent<Props, {}> {
@@ -16,6 +15,7 @@ export default class Link extends React.PureComponent<Props, {}> {
   }
 
   render() {
-    return <a href={this.props.to} className={this.props.className} onClick={this.handleClick}>{this.props.children}</a>
+    const { to, children, ...rest }: Props = this.props;
+    return <a href={this.props.to} {...rest} onClick={this.handleClick}>{this.props.children}</a>
   }
 }

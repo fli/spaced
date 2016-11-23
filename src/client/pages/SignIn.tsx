@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { get, post } from '../fetch';
+const { container } = require('./SignIn.css');
 
 interface Props {
   setLoggedIn: (loggedIn: boolean) => void;
@@ -36,7 +37,7 @@ export default class SignIn extends React.Component<Props, State> {
   render() {
     const { email, password } = this.state;
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit} className={container}>
         <p>
           <label>Email</label>
           <input name="email" type="email" onInput={this.handleInput} value={email} />

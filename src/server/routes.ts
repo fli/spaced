@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import * as db from './db';
 import sendVerificationEmail from './email';
 import App from '../client/App';
+import * as constants from '../shared/constants';
 
 const INDEX_HTML = readFileSync('./public/index.html', {encoding: 'utf-8'});
 
@@ -64,8 +65,24 @@ async function addUser(ctx: Context) {
 }
 
 async function handleRender(ctx: Context) {
-  const html = renderToString(createElement(App, { name: 'Spaced', loggedIn: false, path: ctx.path, query: ctx.querystring }))
-  ctx.body = INDEX_HTML.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
+  const sessionId = ctx.cookies.get('sessionId');
+  let props;
+  if (sessionId === undefined) {
+    props = { name: constants.AppName, loggedIn: false, path: ctx.path, query: ctx.querystring, decks: undefined };
+  } else {
+    const decks = await db.getDecks(sessionId);
+    props = { name: constants.AppName, loggedIn: true, path: ctx.path, query: ctx.querystring, decks }
+  }
+  const app = createElement(App, props);
+  const html = renderToString(app);
+  const preloadedState = app.props;
+  ctx.body = INDEX_HTML
+              .replace('<div id="root"></div>',
+                        `<div id="root">${html}</div>`)
+              .replace('<script id="__PRELOADED_STATE__"></script>',
+                        `<script id="__PRELOADED_STATE__">
+                            window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)}
+                         </script>`);
   ctx.status = 200;
 }
 

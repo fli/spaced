@@ -1,18 +1,28 @@
 import * as React from 'react';
 import { render } from 'react-dom';
+
 import history from './history';
-
 import App from './App';
+import * as constants from '../shared/constants';
 
-const APP_NAME = 'Spaced';
+interface MyWindow extends Window {
+  __PRELOADED_STATE__: any
+}
+
+const preloadedState = (window as MyWindow).__PRELOADED_STATE__;
+const stateContainer = document.querySelector('#__PRELOADED_STATE__');
+if (stateContainer) {
+  stateContainer.remove();
+}
+
 
 function renderApp(path: string, query: string) {
   render(
-    <App name={APP_NAME} loggedIn={false} path={path} query={query} />,
+    <App name={constants.AppName} loggedIn={preloadedState.loggedIn} path={path} query={query} decks={preloadedState.decks} />,
     document.getElementById('root')
   );
 }
-history.listen((location: Location, _) => {
-  renderApp(location.pathname, location.search);
+history.listen(({pathname, search}: Location, _) => {
+  renderApp(pathname, search);
 });
 renderApp(history.location.pathname, history.location.search);

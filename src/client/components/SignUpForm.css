@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  background: darkblue;
+  padding: 1rem 0;
+}
+
+.container > input {
+  width: calc(100% - 3rem);
+  margin: .25rem 1.5rem;
+  border-style: solid;
+  border-radius: .25rem;
+  border: 1px solid rgba(0, 0, 0, .15);
+  padding: .5rem .75rem;
+}
+
+.container > button {
+  color: white;
+  background: lightseagreen;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  padding: .5rem;
+  margin: .25rem 1.5rem;
+}

@@ -49,7 +49,7 @@ export default class AddDeckModal extends React.Component<Props, State> {
 
   render() {
     const { name, isSubmitting } = this.state;
-    if (!name) {return null};
+    if (name === undefined) {return null};
     return (
       <div hidden={!this.props.isDialogOpen}>
         <form onSubmit={this.handleSubmit}>
