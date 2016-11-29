@@ -16,7 +16,6 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.tsx?$/, loaders: [ { loader: 'ts-loader', query: { configFileName: './src/client/tsconfig.json' } } ]},
-      // { test: /\.css$/, loaders: [ 'style-loader', 'css-loader?camelCase&importLoaders=1&modules&localIdentName=[name]_[local]_[hash:base64:3]', 'postcss-loader' ] },
       { test: /\.css$/, loader: ExtractTextPlugin.extract({
         loader: 'css-loader?camelCase&importLoaders=1&modules&localIdentName=[name]_[local]_[hash:base64:3]!postcss-loader'
       })}
