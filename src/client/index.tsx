@@ -15,14 +15,21 @@ if (stateContainer) {
   stateContainer.remove();
 }
 
-
 function renderApp(path: string, query: string) {
   render(
-    <App name={constants.AppName} loggedIn={preloadedState.loggedIn} path={path} query={query} decks={preloadedState.decks} />,
+    <App
+      name={constants.AppName}
+      loggedIn={preloadedState.loggedIn}
+      path={path}
+      query={query}
+      decks={preloadedState.decks}
+    />,
     document.getElementById('root')
   );
 }
+
 history.listen(({pathname, search}: Location, _) => {
   renderApp(pathname, search);
 });
+
 renderApp(history.location.pathname, history.location.search);

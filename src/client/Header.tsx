@@ -24,7 +24,7 @@ class Header extends React.PureComponent<Props, {}> {
             <li><Link to='/' className={brand}>Learnding</Link></li>
             {loggedIn && <li><Link to='/'>Decks</Link></li>}
             {loggedIn && <li><Link to='/addcard'>Add Card</Link></li>}
-            {loggedIn && <li>Browse Cards</li>}
+            {loggedIn && <li><Link to='/cards'>Browse Cards</Link></li>}
           </ul>
           {loggedIn && <SignOutButton className={button + ' ' + rightFlex} setLoggedIn={setLoggedIn} />}
           {!loggedIn && <Link to='/signin' className={button + ' ' + rightFlex}>Sign In</Link>}

@@ -3,6 +3,7 @@ import { parse } from 'querystring';
 
 import AddCard from './pages/AddCard';
 import AddDeckModal from './components/AddDeckModal';
+import Cards from './pages/Cards';
 import DeckDetails from './pages/DeckDetails';
 import Deck from '../shared/types/Deck';
 import Decks from './pages/Decks';
@@ -80,9 +81,11 @@ export default class App extends React.Component<Props, State> {
     const signInPage = <SignIn setLoggedIn={this.setLoggedIn} />;
     const decksPage = <Decks decks={decks} fetchDecks={this.fetchDecks} openDialog={this.openDialog} />;
     const addCardsPage = <AddCard decks={decks} fetchDecks={this.fetchDecks} addCard={this.addCard} openDialog={this.openDialog}/>
+    const cardsPage = <Cards />
     switch (path) {
       case '/': return (loggedIn ? decksPage : <Home />);
       case '/addcard': return (loggedIn ? addCardsPage : signInPage);
+      case '/cards': return (loggedIn ? cardsPage: signInPage);
       case '/signin': return (loggedIn ? decksPage : signInPage);
       case '/verify':
         const { token } = parse(query.substring(1));
@@ -93,7 +96,10 @@ export default class App extends React.Component<Props, State> {
       default:
         const res =  /^\/decks\/(\d+)$/.exec(path);
         if (res) {
-          return <DeckDetails deck={decks} />;
+          if (decks === undefined) { return <p>Loading...</p>; }
+          const deckId = parseInt(res[1], 10);
+          const deck = decks.filter(({id}) => id === deckId )[0];
+          return <DeckDetails deck={deck} />;
         }
         return <h1>Not found</h1>;
     }

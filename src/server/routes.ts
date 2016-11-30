@@ -57,6 +57,13 @@ async function addCard(ctx: Context) {
   ctx.status = 200;
 }
 
+async function getCards(ctx: Context) {
+  const sessionId = ctx.cookies.get('sessionId');
+  const cards = await db.getCards(sessionId);
+  ctx.body = { cards }
+  ctx.status = 200;
+}
+
 async function addUser(ctx: Context) {
   const { token, password } = ctx.request.body;
   const sessionId = await db.addUser(token, password);
@@ -88,6 +95,7 @@ async function handleRender(ctx: Context) {
 
 router
   .post('/api/cards', addCard)
+  .get('/api/cards', getCards)
   .get('/api/decks', getDecks)
   .post('/api/decks', addDeck)
   .post('/api/signup', signup)

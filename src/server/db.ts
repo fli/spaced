@@ -37,7 +37,7 @@ export async function createSession(email: string, password: string) {
   try {
     data = await db.one('SELECT id, password_hash FROM users WHERE email = $1', [email]);
   } catch (err) {
-    if (err.code != undefined && err.code === qrec.noData) {
+    if (err.code !== undefined && err.code === qrec.noData) {
       return null;
     }
     throw err;
@@ -58,8 +58,8 @@ export async function createSession(email: string, password: string) {
 export function getDecks(sessionId: string) {
   return db.any(`
     SELECT decks.id, decks.name FROM decks
-    INNER JOIN users ON users.id = decks.user_id
-    INNER JOIN sessions ON users.id = sessions.user_id
+    JOIN users ON users.id = decks.user_id
+    JOIN sessions ON users.id = sessions.user_id
     WHERE sessions.id = $1
   `, [sessionId])
 }
@@ -68,7 +68,7 @@ export function addDeck(sessionId: string, name: string) {
   return db.one(`
     INSERT INTO decks (user_id, name)
     SELECT users.id, $2 FROM users
-    INNER JOIN sessions ON users.id = sessions.user_id
+    JOIN sessions ON users.id = sessions.user_id
     WHERE sessions.id = $1
     RETURNING decks.id
     `, [sessionId, name]);
@@ -78,11 +78,52 @@ export function addCard(sessionId: string, deckId: number, front: string, back: 
   return db.one(`
     INSERT INTO cards (deck_id, front, back)
     SELECT $2, $3, $4 FROM decks
-    INNER JOIN sessions ON sessions.user_id = decks.user_id
+    JOIN sessions ON sessions.user_id = decks.user_id
     WHERE sessions.id = $1
     AND decks.id = $2
     RETURNING cards.id
     `, [sessionId, deckId, front, back]);
+}
+
+export function getCards(sessionId: string) {
+  return db.any(`
+    SELECT cards.id AS card_id, cards.front, cards.back, cards.due_date, decks.id AS deck_id, decks.name FROM cards
+    JOIN decks ON decks.id = cards.deck_id
+    JOIN sessions ON sessions.user_id = decks.user_id
+    WHERE sessions.id = $1
+  `, [sessionId]);
+}
+
+export function getScheduledCards(sessionId: string, deckId: number) {
+  return db.any(`
+    SELECT cards.id, cards.front, cards.back FROM cards
+    JOIN decks ON decks.id = cards.deck_id
+    JOIN sessions ON sessions.user_id = decks.user_id
+    WHERE sessions.id = $1
+    AND decks.id = $2
+  `, [sessionId, deckId]);
+}
+
+export function repeatCard(sessionId: string, cardId: number, grade: number) {
+  if (grade >= 0 && grade < 3) {
+    return db.one(`
+      UPDATE cards
+      SET repetition = DEFAULT
+          due_date = DEFAULT
+          easiness_factor = GREATEST(1.3, easiness_factor + $3 * (.28 - .02 * $3) - .8)
+      
+    `, [sessionId, cardId, grade]);
+  } else if (grade >= 3 && grade <= 5) {
+    return db.one(`
+      UPDATE cards
+      SET easiness_factor = GREATEST(1.3, easiness_factor + $3 * (.28 - .02 * $3) - .8)
+          repetition = repetition + 1
+          last_repeated = 
+      FROM
+    `, [sessionId, cardId, grade])
+  } else {
+    throw new Error();
+  }
 }
 
 export async function resetModels() {
@@ -92,7 +133,7 @@ export async function resetModels() {
   await db.none('DROP TABLE IF EXISTS cards CASCADE');
   await db.none('DROP TABLE IF EXISTS sessions CASCADE');
   await db.none('CREATE TABLE decks (id serial, user_id integer NOT NULL, name text NOT NULL)');
-  await db.none('CREATE TABLE cards (id serial, deck_id integer NOT NULL, front text NOT NULL, back text NOT NULL, easiness_factor real NOT NULL DEFAULT 2.5, repetition integer NOT NULL DEFAULT 0, last_repeated date NOT NULL DEFAULT current_date, due date NOT NULL DEFAULT current_date + 1)');
+  await db.none('CREATE TABLE cards (id serial, deck_id integer NOT NULL, front text NOT NULL, back text NOT NULL, easiness_factor real NOT NULL DEFAULT 2.5, repetition integer NOT NULL DEFAULT 0, last_repeated date NOT NULL DEFAULT current_date, due_date date NOT NULL DEFAULT current_date + 1)');
   await db.none('CREATE TABLE users (id serial, email varchar(254) UNIQUE NOT NULL, password_hash text NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');
   await db.none('CREATE TABLE pending_users (email varchar(254) UNIQUE NOT NULL, verification_token char(24) UNIQUE NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');
   await db.none('CREATE TABLE sessions (id char(24) UNIQUE NOT NULL, user_id integer NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');
