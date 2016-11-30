@@ -101,28 +101,37 @@ export function getScheduledCards(sessionId: string, deckId: number) {
     JOIN sessions ON sessions.user_id = decks.user_id
     WHERE sessions.id = $1
     AND decks.id = $2
+    AND due_date <= current_date
   `, [sessionId, deckId]);
 }
 
+const deltaEfTable = [
+  -0.8,
+  -0.54,
+  -0.32,
+  -0.14,
+  0,
+  0.1
+]
+
 export function repeatCard(sessionId: string, cardId: number, grade: number) {
-  if (grade >= 0 && grade < 3) {
+  const deltaEf = deltaEfTable[grade];
+  if (grade < 3) {
     return db.one(`
       UPDATE cards
       SET repetition = DEFAULT
           due_date = DEFAULT
-          easiness_factor = GREATEST(1.3, easiness_factor + $3 * (.28 - .02 * $3) - .8)
+          easiness_factor = GREATEST(1.3, easiness_factor + $3)
       
-    `, [sessionId, cardId, grade]);
-  } else if (grade >= 3 && grade <= 5) {
+    `, [sessionId, cardId, deltaEf]);
+  } else {
     return db.one(`
       UPDATE cards
-      SET easiness_factor = GREATEST(1.3, easiness_factor + $3 * (.28 - .02 * $3) - .8)
+      SET easiness_factor = GREATEST(1.3, easiness_factor + $3)
           repetition = repetition + 1
           last_repeated = 
       FROM
-    `, [sessionId, cardId, grade])
-  } else {
-    throw new Error();
+    `, [sessionId, cardId, deltaEf])
   }
 }
 

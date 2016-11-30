@@ -28,7 +28,7 @@ function renderApp(path: string, query: string) {
   );
 }
 
-history.listen(({pathname, search}: Location, _) => {
+history.listen(({pathname, search}: Location) => {
   renderApp(pathname, search);
 });
 

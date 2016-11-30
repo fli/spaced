@@ -1,7 +1,7 @@
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory, ListenCallback, Location } from 'history';
 
-const history = {
-  listen: (fn: (location: Location, action: string) => void) => {},
+const history: any = {
+  listen: (callback: ListenCallback) => {},
   push: (path: string, state?: any) => {},
   location: {
     pathname: '',
