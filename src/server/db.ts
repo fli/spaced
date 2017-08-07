@@ -101,7 +101,7 @@ export function getScheduledCards(sessionId: string, deckId: number) {
     JOIN sessions ON sessions.user_id = decks.user_id
     WHERE sessions.id = $1
     AND decks.id = $2
-    AND due_date <= current_date
+    AND (due_date <= current_date OR repeat_after_session OR repetition = 0)
   `, [sessionId, deckId]);
 }
 
@@ -112,26 +112,46 @@ const deltaEfTable = [
   -0.14,
   0,
   0.1
-]
+];
 
 export function repeatCard(sessionId: string, cardId: number, grade: number) {
   const deltaEf = deltaEfTable[grade];
   if (grade < 3) {
     return db.one(`
-      UPDATE cards
-      SET repetition = DEFAULT
-          due_date = DEFAULT
-          easiness_factor = GREATEST(1.3, easiness_factor + $3)
-      
+      UPDATE cards c
+      SET repetition = DEFAULT,
+          due_date = DEFAULT,
+          easiness_factor = GREATEST(1.3, easiness_factor + $3),
+          interval = DEFAULT,
+          repeat_after_session = TRUE
+      FROM decks
+      JOIN sessions ON sessions.user_id = decks.user_id
+      WHERE sessions.id = $1
+        AND c.id = $2
+        AND c.deck_id = decks.id
+      RETURNING repeat_after_session
     `, [sessionId, cardId, deltaEf]);
   } else {
     return db.one(`
-      UPDATE cards
-      SET easiness_factor = GREATEST(1.3, easiness_factor + $3)
-          repetition = repetition + 1
-          last_repeated = 
-      FROM
-    `, [sessionId, cardId, deltaEf])
+      UPDATE cards c
+      SET easiness_factor = GREATEST(1.3, easiness_factor + $3),
+          interval = CASE WHEN repetition = 0 THEN 1
+                          WHEN repetition = 1 THEN 6
+                          ELSE round(interval * easiness_factor)
+                     END,
+          due_date = CASE WHEN repetition = 0 THEN current_date + 1
+                          WHEN repetition = 1 THEN current_date + 6
+                          ELSE current_date + round(interval * easiness_factor)::integer
+                     END,
+          repetition = repetition + 1,
+          repeat_after_session = $4
+      FROM decks
+      JOIN sessions ON sessions.user_id = decks.user_id
+      WHERE sessions.id = $1
+        AND c.id = $2
+        AND c.deck_id = decks.id
+      RETURNING repeat_after_session
+    `, [sessionId, cardId, deltaEf, grade < 4])
   }
 }
 
@@ -142,7 +162,7 @@ export async function resetModels() {
   await db.none('DROP TABLE IF EXISTS cards CASCADE');
   await db.none('DROP TABLE IF EXISTS sessions CASCADE');
   await db.none('CREATE TABLE decks (id serial, user_id integer NOT NULL, name text NOT NULL)');
-  await db.none('CREATE TABLE cards (id serial, deck_id integer NOT NULL, front text NOT NULL, back text NOT NULL, easiness_factor real NOT NULL DEFAULT 2.5, repetition integer NOT NULL DEFAULT 0, last_repeated date NOT NULL DEFAULT current_date, due_date date NOT NULL DEFAULT current_date + 1)');
+  await db.none('CREATE TABLE cards (id serial, deck_id integer NOT NULL, front text NOT NULL, back text NOT NULL, easiness_factor real NOT NULL DEFAULT 2.5, repetition integer NOT NULL DEFAULT 0, interval integer NOT NULL DEFAULT 1, due_date date NOT NULL DEFAULT current_date + 1, repeat_after_session boolean NOT NULL DEFAULT FALSE)');
   await db.none('CREATE TABLE users (id serial, email varchar(254) UNIQUE NOT NULL, password_hash text NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');
   await db.none('CREATE TABLE pending_users (email varchar(254) UNIQUE NOT NULL, verification_token char(24) UNIQUE NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');
   await db.none('CREATE TABLE sessions (id char(24) UNIQUE NOT NULL, user_id integer NOT NULL, created_at timestamptz NOT NULL DEFAULT now())');

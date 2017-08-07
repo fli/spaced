@@ -8,7 +8,6 @@ export default class Home extends React.PureComponent<{}, {}> {
     return (
       <div>
         <div className={jumbotron}>
-          <h1>Tools to help you learn things</h1>
         </div>
         <SignUpForm />
       </div>

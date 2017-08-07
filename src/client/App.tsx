@@ -83,7 +83,7 @@ export default class App extends React.Component<Props, State> {
     const addCardsPage = <AddCard decks={decks} fetchDecks={this.fetchDecks} addCard={this.addCard} openDialog={this.openDialog}/>
     const cardsPage = <Cards />
     switch (path) {
-      case '/': return (loggedIn ? decksPage : <Home />);
+      case '/': return (loggedIn ? decksPage : signInPage);
       case '/addcard': return (loggedIn ? addCardsPage : signInPage);
       case '/cards': return (loggedIn ? cardsPage: signInPage);
       case '/signin': return (loggedIn ? decksPage : signInPage);

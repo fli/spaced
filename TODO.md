@@ -6,5 +6,6 @@
 - Edit card
 - Remove card
 - View all cards
-- Select all scheduled cards
+- Search cards
+- Study all scheduled cards
 - Update single card repetition

@@ -16,7 +16,7 @@ export default class SignOutButton extends React.Component<Props, State> {
   }
 
   render() {
-    const { setLoggedIn, ...rest }: Props = this.props;
+    const { setLoggedIn, ...rest } = this.props;
     return (
       <div onClick={this.handleClick} {...rest} >Sign out</div>
     );

@@ -10,7 +10,7 @@ interface MyWindow extends Window {
 }
 
 const preloadedState = (window as MyWindow).__PRELOADED_STATE__;
-const stateContainer = document.querySelector('#__PRELOADED_STATE__');
+const stateContainer = document.getElementById('__PRELOADED_STATE__');
 if (stateContainer) {
   stateContainer.remove();
 }

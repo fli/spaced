@@ -1,5 +1,11 @@
 .header {
-  height: 3rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  background: dimgray;
+  padding: .5rem 1rem;
 }
 
 .left-container {
@@ -31,7 +37,7 @@
 }
 
 .brand {
-  color: black;
+  color: white;
   font-weight: 600;
   font-size: 1.3rem;
 }
@@ -52,4 +58,10 @@ a:focus, a:hover {
 
 .outer-container > * {
   margin: 0 .5rem;
+}
+
+@media (max-width: 550px) {
+  .collapse {
+    display: none;
+  }
 }
